@@ -16,7 +16,7 @@ class UserController extends BaseController
 
         $db = \Config\Database::connect();
         
-        $search          = trim($this->request->getGet('search') ?? '');
+        $search         = trim($this->request->getGet('search') ?? '');
         $filtreProfil    = $this->request->getGet('profil');
         $filtreCentre    = $this->request->getGet('centre');
         $filtreDirection = $this->request->getGet('direction');
@@ -144,10 +144,8 @@ class UserController extends BaseController
             return redirect()->back()->withInput()->with('error', 'Cette adresse e-mail est déjà utilisée par un autre compte. Veuillez en saisir une autre.');
         }
 
-        // Récupération dynamique de la longueur minimale configurée dans les paramètres système
-        $minLength = (int) get_setting('pwd_min_length', 8);
-        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        $tempPassword = substr(str_shuffle(str_repeat($chars, ceil($minLength / strlen($chars)))), 0, $minLength);
+        // Définition du mot de passe par défaut à "1234"
+        $defaultPassword = '1234';
 
         $data = [
             'IMMUTILISATEUR'     => $imFinal,
@@ -157,7 +155,7 @@ class UserController extends BaseController
             'CODECENTRE'         => $codecentre,
             'EMAIL'              => $email,
             'PROFIL'             => $profil,
-            'MOTDEPASSE'         => password_hash($tempPassword, PASSWORD_BCRYPT),
+            'MOTDEPASSE'         => password_hash($defaultPassword, PASSWORD_BCRYPT),
             'ACTIF'              => 1,
             'PREMIERE_CONNEXION' => 1
         ];
@@ -167,23 +165,7 @@ class UserController extends BaseController
         // Journalisation de la création du compte
         enregistrer_log($session->get('immutilisateur'), "Création du compte utilisateur : " . $imFinal . " (" . $nom . " " . $prenoms . ")");
 
-        // Envoi de l'e-mail contenant le mot de passe temporaire
-        $emailService = \Config\Services::email();
-        $emailService->setTo($email);
-        $emailService->setSubject('INFP Madagascar — Vos accès à la plateforme');
-        
-        $message = "Bonjour " . esc($prenoms) . " " . esc($nom) . ",\n\n";
-        $message .= "Votre compte utilisateur a été créé sur la plateforme INFP Madagascar.\n";
-        $message .= "Voici vos identifiants de connexion :\n\n";
-        $message .= "— Matricule (IM) : " . $imFinal . "\n";
-        $message .= "— Mot de passe temporaire : " . $tempPassword . "\n\n";
-        $message .= "Lors de votre première connexion, il vous sera demandé de personnaliser votre mot de passe.\n\n";
-        $message .= "Cordialement,\nL'Administration Technique - INFP Madagascar";
-
-        $emailService->setMessage($message);
-        $emailService->send();
-
-        return redirect()->to('/utilisateurs')->with('success', 'Compte créé avec succès. Un e-mail contenant le mot de passe temporaire a été envoyé à l\'agent.');
+        return redirect()->to('/utilisateurs')->with('success', 'Compte créé avec succès.');
     }
 
     public function edit($im)

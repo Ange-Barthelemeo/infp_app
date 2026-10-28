@@ -59,10 +59,10 @@ class AuthController extends BaseController
                     case 'ADMIN':
                         return redirect()->to('/dashboard'); // ou /admin/dashboard selon votre configuration admin
                     case 'GESTIONNAIRE_CENTRAL':
-                        return redirect()->to('/gestionnaire/dashboard');
+                        return redirect()->to('/central/dashboard');
                     case 'GESTIONNAIRE_CENTRE':
                     case 'RESPONSABLE_CENTRE':
-                        return redirect()->to('/centre/dashboard');
+                        return redirect()->to('/gestionnaire/dashboard');
                     default:
                         return redirect()->to('/dashboard');
                 }

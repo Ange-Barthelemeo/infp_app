@@ -59,7 +59,7 @@ class FirstLoginController extends BaseController
                 return redirect()->to('/central/dashboard')->with('success', 'Votre mot de passe a été personnalisé avec succès.');
             case 'GESTIONNAIRE_CENTRE':
             case 'RESPONSABLE_CENTRE':
-                return redirect()->to('/centre/dashboard')->with('success', 'Votre mot de passe a été personnalisé avec succès.');
+                return redirect()->to('/gestionnaire/dashboard')->with('success', 'Votre mot de passe a été personnalisé avec succès.');
             default:
                 return redirect()->to('/dashboard')->with('success', 'Votre mot de passe a été personnalisé avec succès.');
         }

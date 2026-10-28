@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Créer un centre - <?= esc(get_setting('app_name', 'INFP Madagascar')) ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
+    <script src="<?= base_url('assets/js/tailwind.js') ?>"></script>
+    <link rel="stylesheet" href="<?= base_url('assets/css/all.min.css') ?>">
 <body class="bg-gray-50 font-sans antialiased flex flex-col h-screen overflow-hidden">
 
     <!-- BANDE TRICOLORE INSTITUTIONNELLE -->
