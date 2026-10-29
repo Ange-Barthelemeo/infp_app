@@ -92,7 +92,8 @@
                         <table class="w-full text-left border-collapse table-auto">
                             <thead>
                                 <tr class="bg-gray-50/50 text-[11px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
-                                    <th class="py-3.5 px-4 whitespace-nowrap">N° CIN / Formateur</th>
+                                    <th class="py-3.5 px-4 whitespace-nowrap">N° CIN Formateur</th>
+                                    <th class="py-3.5 px-4">Matricule/Code Vacataire</th>
                                     <th class="py-3.5 px-4">Formateur</th>
                                     <th class="py-3.5 px-4">Contact</th>
                                     <th class="py-3.5 px-4">Centre</th>
@@ -104,7 +105,16 @@
                                     <?php foreach ($formateurs as $u): ?>
                                         <tr class="hover:bg-gray-50/50 transition">
                                             <td class="py-4 px-4 font-mono font-semibold text-emerald-700 whitespace-nowrap"><?= esc($u['NUMCINFORM']) ?></td>
-                                            <td class="py-4 px-4 font-bold text-gray-900">
+                                            <td class="py-4 px-4 font-mono font-semibold text-emerald-700 whitespace-nowrap">
+                                                <?php if (!empty($u['IMMFORMATEUR'])): ?>
+                                                    <span class="text-emerald-700" title="Permanent"><?= esc($u['IMMFORMATEUR']) ?></span>
+                                                <?php elseif (!empty($u['CODEVAC'])): ?>
+                                                    <span class="text-blue-700" title="Vacataire"><?= esc($u['CODEVAC']) ?></span>
+                                                <?php else: ?>
+                                                    <span class="text-gray-400 italic">N/A</span>
+                                                <?php endif; ?>
+                                            </td>
+                                                                                        <td class="py-4 px-4 font-bold text-gray-900">
                                                 <?= esc(($u['NOMFORMATEUR'] ?? '') . ' ' . ($u['PRENOMFORMATEUR'] ?? '')) ?>
                                             </td>
                                             <td class="py-4 px-4 text-gray-600 truncate max-w-[180px]" title="<?= esc($u['CONTACTFORMATEUR']) ?>"><?= esc($u['CONTACTFORMATEUR']) ?></td>

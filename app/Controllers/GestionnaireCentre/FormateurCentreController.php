@@ -22,8 +22,10 @@ class FormateurCentreController extends BaseController
         $search = trim($this->request->getGet('search') ?? '');
 
         $builder = $db->table('FORMATEUR');
-        $builder->select('FORMATEUR.*, CENTRE.NOMCENTRE');
+        $builder->select('FORMATEUR.*, CENTRE.NOMCENTRE, PERMANENT.IMMFORMATEUR, VACATAIRE.CODEVAC');
         $builder->join('CENTRE', 'CENTRE.CODECENTRE = FORMATEUR.CODECENTRE', 'left');
+        $builder->join('PERMANENT', 'PERMANENT.NUMCINFORM = FORMATEUR.NUMCINFORM', 'left');
+        $builder->join('VACATAIRE', 'VACATAIRE.NUMCINFORM = FORMATEUR.NUMCINFORM', 'left');
         
         // Restriction stricte au centre du gestionnaire connecté
         if ($codeCentre) {
@@ -58,4 +60,5 @@ class FormateurCentreController extends BaseController
 
         return view('gestionnaire/gestionnaire_centre/formateurs/index', $data);
     }
+
 }
