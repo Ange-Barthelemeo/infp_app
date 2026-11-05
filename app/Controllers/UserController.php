@@ -25,14 +25,22 @@ class UserController extends BaseController
         $builder->select('UTILISATEUR.*, DIRECTION.NOMDIRECTION, CENTRE.NOMCENTRE');
         $builder->join('DIRECTION', 'DIRECTION.CODEDIRECTION = UTILISATEUR.CODEDIRECTION', 'left');
         $builder->join('CENTRE', 'CENTRE.CODECENTRE = UTILISATEUR.CODECENTRE', 'left');
-        $builder->where('UTILISATEUR.PROFIL !=', 'ADMIN');
 
-        // Recherche intelligente (IM, Nom seul, Prénom seul, ou Nom + Prénom combinés dans n'importe quel ordre)
+        $profilConnecte = $session->get('profil');
+        $centreConnecte = $session->get('codecentre');
+
+        if ($profilConnecte === 'GESTIONNAIRE_CENTRE') {
+            $builder->where('UTILISATEUR.CODECENTRE', $centreConnecte);
+        } else {
+            $builder->where('UTILISATEUR.PROFIL !=', 'ADMIN');
+        }
+
         if (!empty($search)) {
             $builder->groupStart()
                     ->like('UTILISATEUR.IMMUTILISATEUR', $search)
                     ->orLike('UTILISATEUR.NOM', $search)
                     ->orLike('UTILISATEUR.PRENOMS', $search)
+                    ->orLike('UTILISATEUR.TELEPHONE', $search)
                     ->orLike("CONCAT(UTILISATEUR.NOM, ' ', UTILISATEUR.PRENOMS)", $search)
                     ->orLike("CONCAT(UTILISATEUR.PRENOMS, ' ', UTILISATEUR.NOM)", $search)
                     ->groupEnd();
@@ -41,7 +49,7 @@ class UserController extends BaseController
         if (!empty($filtreProfil)) {
             $builder->where('UTILISATEUR.PROFIL', $filtreProfil);
         }
-        if (!empty($filtreCentre)) {
+        if (!empty($filtreCentre) && $profilConnecte !== 'GESTIONNAIRE_CENTRE') {
             $builder->where('UTILISATEUR.CODECENTRE', $filtreCentre);
         }
         if (!empty($filtreDirection)) {
@@ -58,6 +66,7 @@ class UserController extends BaseController
             'immutilisateur'  => $session->get('immutilisateur'),
             'nom'             => $session->get('nom'),
             'prenoms'         => $session->get('prenoms'),
+            'profilConnecte'  => $profilConnecte,
             'users'           => $users,
             'directions'      => $directions,
             'centres'         => $centres,
@@ -77,14 +86,27 @@ class UserController extends BaseController
             return redirect()->to('/login');
         }
 
+        $profilConnecte = $session->get('profil');
         $db = \Config\Database::connect();
-        $directions = $db->table('DIRECTION')->get()->getResultArray();
-        $centres    = $db->table('CENTRE')->get()->getResultArray();
+        
+        // Récupération uniquement des directions actives (STATUT = 1)
+        $directions = $db->table('DIRECTION')
+                         ->where('STATUT', 1)
+                         ->get()
+                         ->getResultArray();
+        
+        // Récupération uniquement des centres actifs (STATUT = 1)
+        $centres = $db->table('CENTRE')
+                      ->where('STATUT', 1)
+                      ->get()
+                      ->getResultArray();
 
         $data = [
             'immutilisateur' => $session->get('immutilisateur'),
             'nom'            => $session->get('nom'),
             'prenoms'        => $session->get('prenoms'),
+            'profilConnecte' => $profilConnecte,
+            'centreConnecte' => $session->get('codecentre'),
             'directions'     => $directions,
             'centres'        => $centres
         ];
@@ -99,32 +121,67 @@ class UserController extends BaseController
             return redirect()->to('/login');
         }
 
+        $profilConnecte = $session->get('profil');
         $userModel = new UtilisateurModel();
 
-        $rawIm   = trim($this->request->getPost('immutilisateur'));
-        $nom     = trim($this->request->getPost('nom'));
-        $prenoms = trim($this->request->getPost('prenoms'));
-        $email   = trim($this->request->getPost('email'));
-        $profil  = $this->request->getPost('profil');
+        $rawIm     = trim($this->request->getPost('immutilisateur'));
+        $nom       = trim($this->request->getPost('nom'));
+        $prenoms   = trim($this->request->getPost('prenoms'));
+        $email     = trim($this->request->getPost('email'));
+        $telephone = trim($this->request->getPost('telephone'));
+        $profil    = $this->request->getPost('profil');
+
+        // Validation stricte de la hiérarchie des créations de comptes selon le rôle connecté
+        $autorise = false;
+        if ($profilConnecte === 'ADMIN' && in_array($profil, ['GESTIONNAIRE_CENTRAL', 'GESTIONNAIRE_CENTRE'])) {
+            $autorise = true;
+        } elseif ($profilConnecte === 'GESTIONNAIRE_CENTRAL' && $profil === 'GESTIONNAIRE_CENTRE') {
+            $autorise = true;
+        } elseif ($profilConnecte === 'GESTIONNAIRE_CENTRE' && $profil === 'RESPONSABLE_CENTRE') {
+            $autorise = true;
+        }
+
+        if (!$autorise) {
+            return redirect()->back()->withInput()->with('error', 'Vous n\'avez pas les droits nécessaires pour créer un utilisateur avec ce rôle.');
+        }
         
-        $chiffres = preg_replace('/\D/', '', $rawIm);
-        
-        if (strlen($chiffres) !== 6) {
+        // Validation stricte de l'IM (exactement 6 chiffres collés)
+        $chiffresIm = preg_replace('/\D/', '', $rawIm);
+        if (strlen($chiffresIm) !== 6) {
             return redirect()->back()->withInput()->with('error', 'Le matricule (IM) doit comporter exactement 6 chiffres.');
         }
+        $imFinal = $chiffresIm; // Stocké sans espace pour faciliter le login (ex: 001007)
 
-        $lettreProfil = 'C';
-        if ($profil === 'ADMIN') {
-            $lettreProfil = 'A';
-        } elseif ($profil === 'GESTIONNAIRE_CENTRAL') {
-            $lettreProfil = 'C';
-        } elseif ($profil === 'GESTIONNAIRE_CENTRE') {
-            $lettreProfil = 'B';
-        } elseif ($profil === 'RESPONSABLE_CENTRE') {
-            $lettreProfil = 'R';
+        // Unicité de l'IM
+        if ($userModel->find($imFinal)) {
+            return redirect()->back()->withInput()->with('error', 'Cet IM (' . $imFinal . ') est déjà attribué à un autre utilisateur.');
         }
 
-        $imFinal = substr($chiffres, 0, 3) . ' ' . substr($chiffres, 3, 3) . '-' . $lettreProfil;
+        // Validation et normalisation sécurisée du téléphone (+261)
+        $telephoneNormalise = null;
+        if (!empty($telephone)) {
+            $telephoneNettoye = preg_replace('/\s+/', '', $telephone);
+
+            if (preg_match('/^(32|33|34|37|38)\d{7}$/', $telephoneNettoye)) {
+                $telephoneNormalise = '+261' . $telephoneNettoye;
+            } elseif (preg_match('/^\+261(32|33|34|37|38)\d{7}$/', $telephoneNettoye)) {
+                $telephoneNormalise = $telephoneNettoye;
+            }
+
+            if (!$telephoneNormalise || !preg_match('/^\+261(32|33|34|37|38)\d{7}$/', $telephoneNormalise)) {
+                return redirect()->back()->withInput()->with('error', 'Le numéro de téléphone est invalide. Format attendu : 34 XX XXX XX.');
+            }
+
+            // Unicité du téléphone
+            if ($userModel->where('TELEPHONE', $telephoneNormalise)->first()) {
+                return redirect()->back()->withInput()->with('error', 'Ce numéro de téléphone est déjà utilisé par un autre compte.');
+            }
+        }
+
+        // Unicité de l'e-mail
+        if (!empty($email) && $userModel->where('EMAIL', $email)->first()) {
+            return redirect()->back()->withInput()->with('error', 'Cette adresse e-mail est déjà utilisée par un autre compte.');
+        }
 
         $codedirection = null;
         $codecentre    = null;
@@ -132,27 +189,20 @@ class UserController extends BaseController
         if ($profil === 'GESTIONNAIRE_CENTRAL') {
             $codedirection = $this->request->getPost('codedirection') ?: null;
         } else {
-            $codecentre = $this->request->getPost('codecentre') ?: null;
+            if ($profilConnecte === 'GESTIONNAIRE_CENTRE') {
+                $codecentre = $session->get('codecentre');
+            } else {
+                $codecentre = $this->request->getPost('codecentre') ?: null;
+            }
         }
 
-        if ($userModel->find($imFinal)) {
-            return redirect()->back()->withInput()->with('error', 'Ce matricule (IM) existe déjà dans la base.');
-        }
-
-        // Vérification de l'unicité de l'e-mail lors de la création
-        if (!empty($email) && $userModel->where('EMAIL', $email)->first()) {
-            return redirect()->back()->withInput()->with('error', 'Cette adresse e-mail est déjà utilisée par un autre compte. Veuillez en saisir une autre.');
-        }
-
-        // Récupération dynamique de la longueur minimale configurée dans les paramètres système
-        $minLength = (int) get_setting('pwd_min_length', 8);
-        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        $tempPassword = substr(str_shuffle(str_repeat($chars, ceil($minLength / strlen($chars)))), 0, $minLength);
+        $tempPassword = '12345678';
 
         $data = [
             'IMMUTILISATEUR'     => $imFinal,
             'NOM'                => $nom,
             'PRENOMS'            => $prenoms,
+            'TELEPHONE'          => $telephoneNormalise,
             'CODEDIRECTION'      => $codedirection,
             'CODECENTRE'         => $codecentre,
             'EMAIL'              => $email,
@@ -164,110 +214,24 @@ class UserController extends BaseController
 
         $userModel->insert($data);
 
-        // Journalisation de la création du compte
         enregistrer_log($session->get('immutilisateur'), "Création du compte utilisateur : " . $imFinal . " (" . $nom . " " . $prenoms . ")");
 
-        // Envoi de l'e-mail contenant le mot de passe temporaire
-        $emailService = \Config\Services::email();
-        $emailService->setTo($email);
-        $emailService->setSubject('INFP Madagascar — Vos accès à la plateforme');
-        
-        $message = "Bonjour " . esc($prenoms) . " " . esc($nom) . ",\n\n";
-        $message .= "Votre compte utilisateur a été créé sur la plateforme INFP Madagascar.\n";
-        $message .= "Voici vos identifiants de connexion :\n\n";
-        $message .= "— Matricule (IM) : " . $imFinal . "\n";
-        $message .= "— Mot de passe temporaire : " . $tempPassword . "\n\n";
-        $message .= "Lors de votre première connexion, il vous sera demandé de personnaliser votre mot de passe.\n\n";
-        $message .= "Cordialement,\nL'Administration Technique - INFP Madagascar";
-
-        $emailService->setMessage($message);
-        $emailService->send();
-
-        return redirect()->to('/utilisateurs')->with('success', 'Compte créé avec succès. Un e-mail contenant le mot de passe temporaire a été envoyé à l\'agent.');
-    }
-
-    public function edit($im)
-    {
-        $session = session();
-        if (!$session->get('logged_in')) {
-            return redirect()->to('/login');
-        }
-
-        $db = \Config\Database::connect();
-        $imDecoded = urldecode($im);
-
-        $userModel = new UtilisateurModel();
-        $userToEdit = $userModel->find($imDecoded);
-
-        if (!$userToEdit) {
-            return redirect()->to('/utilisateurs')->with('error', 'Utilisateur introuvable.');
-        }
-
-        $directions = $db->table('DIRECTION')->get()->getResultArray();
-        $centres    = $db->table('CENTRE')->get()->getResultArray();
-
-        $data = [
-            'immutilisateur' => $session->get('immutilisateur'),
-            'nom'            => $session->get('nom'),
-            'prenoms'        => $session->get('prenoms'),
-            'userToEdit'     => $userToEdit,
-            'directions'     => $directions,
-            'centres'        => $centres
-        ];
-
-        return view('admin/users/edit', $data);
-    }
-
-    public function update($im)
-    {
-        $session = session();
-        if (!$session->get('logged_in')) {
-            return redirect()->to('/login');
-        }
-
-        $userModel = new UtilisateurModel();
-        $imDecoded = urldecode($im);
-        $currentUser = $userModel->find($imDecoded);
-
-        if (!$currentUser) {
-            return redirect()->to('/utilisateurs')->with('error', 'Utilisateur introuvable.');
-        }
-
-        $nom     = trim($this->request->getPost('nom'));
-        $prenoms = trim($this->request->getPost('prenoms'));
-        $email   = trim($this->request->getPost('email'));
-
-        // Vérification de l'unicité de l'e-mail lors de la modification (excluant l'utilisateur actuel)
         if (!empty($email)) {
-            $existingEmailUser = $userModel->where('EMAIL', $email)->where('IMMUTILISATEUR !=', $imDecoded)->first();
-            if ($existingEmailUser) {
-                return redirect()->back()->withInput()->with('error', 'Cette adresse e-mail appartient déjà à un autre utilisateur. Modification refusée.');
-            }
+            $emailService = \Config\Services::email();
+            $emailService->setTo($email);
+            $emailService->setSubject('INFP Madagascar — Création de votre compte utilisateur');
+            
+            $message = "Bonjour " . esc($prenoms) . " " . esc($nom) . ",\n\n";
+            $message .= "Votre compte utilisateur a été créé avec succès sur la plateforme INFP Madagascar.\n";
+            $message .= "Votre identifiant de connexion (Matricule IM) est : " . $imFinal . "\n\n";
+            $message .= "Lors de votre première connexion, il vous sera demandé de modifier votre mot de passe provisoire.\n\n";
+            $message .= "Cordialement,\nL'Administration Technique - INFP Madagascar";
+
+            $emailService->setMessage($message);
+            @$emailService->send();
         }
 
-        $codedirection = null;
-        $codecentre    = null;
-
-        if ($currentUser['PROFIL'] === 'GESTIONNAIRE_CENTRAL') {
-            $codedirection = $this->request->getPost('codedirection') ?: null;
-        } else {
-            $codecentre = $this->request->getPost('codecentre') ?: null;
-        }
-
-        $updateData = [
-            'NOM'           => $nom,
-            'PRENOMS'       => $prenoms,
-            'CODEDIRECTION' => $codedirection,
-            'CODECENTRE'    => $codecentre,
-            'EMAIL'         => $email
-        ];
-
-        $userModel->update($imDecoded, $updateData);
-
-        // Journalisation de la modification du compte
-        enregistrer_log($session->get('immutilisateur'), "Modification du compte utilisateur : " . $imDecoded);
-
-        return redirect()->to('/utilisateurs')->with('success', 'Informations de l\'utilisateur mises à jour avec succès.');
+        return redirect()->to('/utilisateurs')->with('success', 'Compte créé avec succès. Une notification a été envoyée à l\'agent.');
     }
 
     public function toggleStatus($im)
@@ -285,11 +249,10 @@ class UserController extends BaseController
             $newStatus = $user['ACTIF'] ? 0 : 1;
             $userModel->update($imDecoded, ['ACTIF' => $newStatus]);
             
-            // Journalisation du changement de statut (Activation / Désactivation)
             $statusLabel = $newStatus ? 'Activation' : 'Désactivation';
             enregistrer_log($session->get('immutilisateur'), "$statusLabel du compte utilisateur : " . $imDecoded);
 
-            return redirect()->to('/utilisateurs')->with('success', 'Statut du compte mis à jour.');
+            return redirect()->to('/utilisateurs')->with('success', 'Statut du compte mis à jour avec succès.');
         }
 
         return redirect()->to('/utilisateurs')->with('error', 'Utilisateur introuvable.');

@@ -6,10 +6,16 @@
     <title>Administration - <?= esc(get_setting('app_name', 'INFP Madagascar')) ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Masquer la flèche par défaut de la balise details sur certains navigateurs */
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased flex flex-col h-screen overflow-hidden">
 
-    <!-- BANDE TRICOLORE INSTITUTIONNELLE (Rappel de la page de connexion) -->
+    <!-- BANDE TRICOLORE INSTITUTIONNELLE -->
     <div class="h-1.5 w-full flex">
         <div class="w-1/3 bg-red-600"></div>
         <div class="w-1/3 bg-white"></div>
@@ -18,70 +24,92 @@
 
     <div class="flex flex-1 overflow-hidden">
 
-        <!-- SIDEBAR -->
-        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between">
+        <!-- SIDEBAR UNIFIÉE ET COMPLÈTE -->
+        <!-- SIDEBAR UNIFIÉE, SANS SOUS-TITRES ET ACTIVE -->
+<aside class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between shrink-0">
+    <div>
+        <!-- En-tête / Logo -->
+        <div class="p-6 border-b border-gray-100 flex items-center space-x-3">
+            <div class="w-9 h-6 rounded overflow-hidden shadow-sm flex border border-gray-200 shrink-0">
+                <div class="w-1/3 h-full bg-white"></div>
+                <div class="w-2/3 h-full flex flex-col">
+                    <div class="h-1/2 w-full bg-red-600"></div>
+                    <div class="h-1/2 w-full bg-emerald-600"></div>
+                </div>
+            </div>
             <div>
-                <!-- En-tête / Logo (Drapeau officiel de Madagascar) -->
-                <div class="p-6 border-b border-gray-100 flex items-center space-x-3">
-                    <div class="w-9 h-6 rounded overflow-hidden shadow-sm flex border border-gray-200 shrink-0">
-                        <!-- Bande verticale blanche à gauche -->
-                        <div class="w-1/3 h-full bg-white"></div>
-                        <!-- Blocs horizontaux rouge (haut) et vert (bas) à droite -->
-                        <div class="w-2/3 h-full flex flex-col">
-                            <div class="h-1/2 w-full bg-red-600"></div>
-                            <div class="h-1/2 w-full bg-emerald-600"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <h1 class="text-sm font-bold text-gray-800"><?= esc(get_setting('app_name', 'INFP Madagascar')) ?></h1>
-                        <p class="text-[11px] text-gray-500"><?= esc(get_setting('app_subtitle', 'Administration Technique')) ?></p>
-                    </div>
-                </div>
-
-                <!-- Profil Admin Convivial (Nom, Prénom et Matricule) -->
-                <div class="p-4 m-4 bg-gray-50 rounded-xl border border-gray-100 flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
-                        <?= strtoupper(substr($prenoms ?? 'A', 0, 1)) ?>
-                    </div>
-                    <div class="overflow-hidden">
-                        <p class="text-xs font-bold text-gray-900 truncate"><?= esc(($prenoms ?? '') . ' ' . ($nom ?? 'Administrateur')) ?></p>
-                        <p class="text-[10px] font-mono text-gray-500"><?= esc($immutilisateur) ?></p>
-                    </div>
-                </div>
-
-                <!-- Navigation -->
-                <nav class="px-4 space-y-1">
-                    <a href="/dashboard" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg bg-emerald-600 text-white text-sm font-medium transition shadow-sm">
-                        <i class="fa-solid fa-chart-pie w-5"></i>
-                        <span>Tableau de bord</span>
-                    </a>
-                    <a href="/utilisateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-medium transition">
-                        <i class="fa-solid fa-users-gear w-5"></i>
-                        <span>Gestion des comptes</span>
-                    </a>
-                    <a href="/audit-logs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-medium transition">
-                        <i class="fa-solid fa-shield-halved w-5"></i>
-                        <span>Journaux d'audit (Logs)</span>
-                    </a>
-                    <a href="/admin/profile" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-medium transition">
-                        <i class="fa-solid fa-user-gear w-5"></i>
-                        <span>Mon Profil Admin</span>
-                    </a>
-                    <a href="/parametres" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-medium transition">
-                        <i class="fa-solid fa-sliders w-5"></i>
-                        <span>Paramètres système</span>
-                    </a>
-                </nav>
+                <h1 class="text-sm font-bold text-gray-800"><?= esc(get_setting('app_name', 'INFP Madagascar')) ?></h1>
+                <p class="text-[11px] text-gray-500">Administration Technique</p>
             </div>
+        </div>
 
-            <!-- Déconnexion -->
-            <div class="p-4 border-t border-gray-100">
-                <a href="/logout" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 text-sm font-medium transition">
-                    <i class="fa-solid fa-right-from-bracket w-5"></i>
-                    <span>Déconnexion</span>
-                </a>
+        <!-- Profil Admin Convivial -->
+        <div class="p-4 m-4 bg-gray-50 rounded-xl border border-gray-100 flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                <?= strtoupper(substr($prenoms ?? 'A', 0, 1)) ?>
             </div>
-        </aside>
+            <div class="overflow-hidden">
+                <p class="text-xs font-bold text-gray-900 truncate"><?= esc(($prenoms ?? '') . ' ' . ($nom ?? 'Administrateur')) ?></p>
+                <p class="text-[10px] font-mono text-gray-500">
+                    <?php 
+                        $adminImBrut = preg_replace('/\D/', '', $immutilisateur ?? '');
+                        echo (strlen($adminImBrut) === 6) ? substr($adminImBrut, 0, 3) . ' ' . substr($adminImBrut, 3, 3) : esc($immutilisateur);
+                    ?>
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation Épurée sans sous-titres -->
+        <nav class="px-4 space-y-1 overflow-y-auto max-h-[calc(100vh-280px)] pb-4">
+            
+            <?php $uri = service('uri'); ?>
+            
+            <!-- Tableau de bord -->
+            <a href="/dashboard" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(1) == 'dashboard') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                <i class="fa-solid fa-chart-pie w-5"></i>
+                <span>Tableau de bord</span>
+            </a>
+
+            <!-- Gestion des comptes -->
+            <a href="/utilisateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(1) == 'utilisateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                <i class="fa-solid fa-users-gear w-5"></i>
+                <span>Gestion des comptes</span>
+            </a>
+
+            <!-- Journaux d'audit -->
+            <a href="/audit-logs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(1) == 'audit-logs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                <i class="fa-solid fa-shield-halved w-5"></i>
+                <span>Journaux d'audit (Logs)</span>
+            </a>
+
+            <!-- Référentiel & Métadonnées -->
+            <a href="/admin/referentiel" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(1) == 'admin' && $uri->getSegment(2) == 'referentiel') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                <i class="fa-solid fa-database w-5 <?= ($uri->getSegment(1) == 'admin' && $uri->getSegment(2) == 'referentiel') ? 'text-white' : 'text-emerald-600' ?>"></i>
+                <span>Référentiel & Métadonnées</span>
+            </a>
+
+            <!-- Mon Profil Admin -->
+            <a href="/admin/profile" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(1) == 'admin' && $uri->getSegment(2) == 'profile') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                <i class="fa-solid fa-user-gear w-5"></i>
+                <span>Mon Profil Admin</span>
+            </a>
+
+            <!-- Paramètres système -->
+            <a href="/parametres" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(1) == 'parametres') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                <i class="fa-solid fa-sliders w-5"></i>
+                <span>Paramètres système</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Déconnexion -->
+    <div class="p-4 border-t border-gray-100 shrink-0">
+        <a href="/logout" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 text-sm font-medium transition">
+            <i class="fa-solid fa-right-from-bracket w-5"></i>
+            <span>Déconnexion</span>
+        </a>
+    </div>
+</aside>
 
         <!-- MAIN CONTENT -->
         <main class="flex-1 flex flex-col overflow-y-auto bg-gray-50/50">
@@ -153,9 +181,10 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-gray-50/50 text-[11px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
-                                    <th class="py-3 px-6">Matricule (IMMUTILISATEUR)</th>
+                                    <th class="py-3 px-6">Matricule (IM)</th>
                                     <th class="py-3 px-6">Utilisateur (Nom & Prénoms)</th>
                                     <th class="py-3 px-6">Email</th>
+                                    <th class="py-3 px-6">Téléphone</th>
                                     <th class="py-3 px-6">Profil</th>
                                     <th class="py-3 px-6">Statut</th>
                                 </tr>
@@ -164,13 +193,21 @@
                                 <?php if (!empty($recentUsers)): ?>
                                     <?php foreach ($recentUsers as $u): ?>
                                         <tr class="hover:bg-gray-50/50 transition">
-                                            <td class="py-4 px-6 font-mono text-xs text-gray-600"><?= esc($u['IMMUTILISATEUR']) ?></td>
+                                            <td class="py-4 px-6 font-mono text-xs font-semibold text-emerald-700 whitespace-nowrap">
+                                                <?php 
+                                                    $imBrut = preg_replace('/\D/', '', $u['IMMUTILISATEUR']);
+                                                    echo (strlen($imBrut) === 6) ? substr($imBrut, 0, 3) . ' ' . substr($imBrut, 3, 3) : esc($u['IMMUTILISATEUR']);
+                                                ?>
+                                            </td>
                                             <td class="py-4 px-6 font-bold text-gray-900">
                                                 <?= esc(($u['NOM'] ?? '') . ' ' . ($u['PRENOMS'] ?? '')) ?>
                                             </td>
-                                            <td class="py-4 px-6 text-gray-600"><?= esc($u['EMAIL']) ?></td>
+                                            <td class="py-4 px-6 text-gray-600 text-xs"><?= esc($u['EMAIL']) ?></td>
+                                            <td class="py-4 px-6 text-gray-600 font-mono text-xs">
+                                                <?= !empty($u['TELEPHONE']) ? esc($u['TELEPHONE']) : '<span class="italic text-gray-400">Non renseigné</span>' ?>
+                                            </td>
                                             <td class="py-4 px-6">
-                                                <span class="inline-block px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-md">
+                                                <span class="inline-block px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-md whitespace-nowrap">
                                                     <?= esc($u['PROFIL']) ?>
                                                 </span>
                                             </td>
@@ -189,7 +226,7 @@
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="5" class="py-6 text-center text-gray-400 text-sm">Aucun utilisateur enregistré.</td>
+                                        <td colspan="6" class="py-6 text-center text-gray-400 text-sm">Aucun utilisateur enregistré.</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>

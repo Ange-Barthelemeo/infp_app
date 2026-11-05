@@ -15,13 +15,18 @@ class CentralDashboardController extends BaseController
 
         $db = \Config\Database::connect();
 
-        // 1. Total des centres régionaux
-        $totalCentres = $db->table('CENTRE')->countAllResults();
+        // 1. Total des centres régionaux ACTIFS uniquement (STATUT = 1)
+        $totalCentres = $db->table('CENTRE')
+                           ->where('STATUT', 1)
+                           ->countAllResults();
 
-        // 2. Total des élèves-maîtres (Adaptez le nom de la table si besoin, ex: 'ELEVE' ou 'ELEVE_MAITRE')
+        // 2. Total des élèves-maîtres rattachés aux centres actifs
         $totalEleves = 0;
-        if ($db->tableExists('ELEVE')) {
-            $totalEleves = $db->table('ELEVE')->countAllResults();
+        if ($db->tableExists('ELEVE') && $db->tableExists('CENTRE')) {
+            $totalEleves = $db->table('ELEVE')
+                              ->join('CENTRE', 'CENTRE.CODECENTRE = ELEVE.CODECENTRE', 'inner')
+                              ->where('CENTRE.STATUT', 1)
+                              ->countAllResults();
         }
 
         // 3. Total des formateurs et ventilation (Permanents / Vacataires)
@@ -29,9 +34,10 @@ class CentralDashboardController extends BaseController
         $totalPermanents = $db->table('PERMANENT')->countAllResults();
         $totalVacataires = $db->table('VACATAIRE')->countAllResults();
 
-        // 4. Répartition géographique des centres (basée sur la colonne LOCALISATION)
+        // 4. Répartition géographique des centres ACTIFS uniquement
         $repartitionGeo = $db->table('CENTRE')
             ->select('LOCALISATION, COUNT(*) as total')
+            ->where('STATUT', 1)
             ->groupBy('LOCALISATION')
             ->get()
             ->getResultArray();
@@ -47,7 +53,7 @@ class CentralDashboardController extends BaseController
             'nom'              => $session->get('nom'),
             'prenoms'          => $session->get('prenoms'),
             'totalCentres'     => $totalCentres,
-            'totalEleves'      => $totalEleves, // Transmis à la vue
+            'totalEleves'      => $totalEleves,
             'totalFormateurs'  => $totalFormateurs,
             'totalPermanents'  => $totalPermanents,
             'totalVacataires'  => $totalVacataires,
