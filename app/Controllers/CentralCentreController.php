@@ -53,13 +53,13 @@ class CentralCentreController extends BaseController
             ->select('ELEVEMAITRE.*, CLASSE.NOMCLASSE, CLASSE.CODECENTRE, CENTRE.NOMCENTRE, SECTION.LIBELLESECTION, SECTION.CODESECTION')
             ->join('CLASSE', 'CLASSE.CODECLASSE = ELEVEMAITRE.CODECLASSE', 'inner')
             ->join('CENTRE', 'CENTRE.CODECENTRE = CLASSE.CODECENTRE', 'inner')
-            ->join('SECTION', 'SECTION.CODESECTION = CLASSE.CODESECTION', 'left') // Adaptez selon votre table SECTION
+            ->join('SECTION', 'SECTION.CODESECTION = CLASSE.CODESECTION', 'left')
             ->where('ELEVEMAITRE.MATRICULEELEVE', $matricule)
             ->get()
             ->getRowArray();
 
         if (!$eleve) {
-            return redirect()->to('/gestionnaire/centres')->with('error', 'Dossier d’élève-maître introuvable.');
+            return redirect()->to('/central/centres')->with('error', 'Dossier d’élève-maître introuvable.');
         }
 
         // Sécurité supplémentaire : Vérifier que le centre rattaché est actif (STATUT = 1)
@@ -70,7 +70,7 @@ class CentralCentreController extends BaseController
             ->getRowArray();
 
         if (!$centreActif) {
-            return redirect()->to('/gestionnaire/centres')->with('error', 'Accès refusé : le centre de rattachement de cet élève est inactif.');
+            return redirect()->to('/central/centres')->with('error', 'Accès refusé : le centre de rattachement de cet élève est inactif.');
         }
 
         // 2. Récupérer les notes de l'élève par EC et par UE (via AVOIRNOTE)
@@ -97,7 +97,7 @@ class CentralCentreController extends BaseController
             $uesStructure[$codeUE]['ecs'][] = $note;
         }
 
-        // Calcul simple des moyennes par UE (si notes et coefficients disponibles)
+        // Calcul simple des moyennes par UE
         foreach ($uesStructure as $codeUE => &$ue) {
             $totalPoints = 0;
             $totalCoeff = 0;
@@ -107,7 +107,6 @@ class CentralCentreController extends BaseController
                 $totalPoints += ($valeur * $coef);
                 $totalCoeff += $coef;
                 
-                // Condition de validation d'un EC (ex: note >= 10/20)
                 if ($valeur < 10) {
                     $ue['validee'] = false;
                 }
@@ -143,7 +142,8 @@ class CentralCentreController extends BaseController
             ->getRowArray();
 
         if (!$centre) {
-            return redirect()->to('/gestionnaire/centres')->with('error', 'Centre introuvable.');
+            // CORRIGÉ ICI : Redirection vers /central/centres au lieu de /gestionnaire/centres
+            return redirect()->to('/central/centres')->with('error', 'Centre introuvable.');
         }
 
         // Récupérer les élèves-maîtres du centre via les classes

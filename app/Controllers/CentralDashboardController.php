@@ -20,13 +20,14 @@ class CentralDashboardController extends BaseController
                            ->where('STATUT', 1)
                            ->countAllResults();
 
-        // 2. Total des élèves-maîtres rattachés aux centres actifs
+        // 2. Total des élèves-maîtres rattachés aux centres actifs (Corrigé via ELEVEMAITRE et CLASSE)
         $totalEleves = 0;
-        if ($db->tableExists('ELEVE') && $db->tableExists('CENTRE')) {
-            $totalEleves = $db->table('ELEVE')
-                              ->join('CENTRE', 'CENTRE.CODECENTRE = ELEVE.CODECENTRE', 'inner')
-                              ->where('CENTRE.STATUT', 1)
-                              ->countAllResults();
+        if ($db->tableExists('ELEVEMAITRE') && $db->tableExists('CLASSE') && $db->tableExists('CENTRE')) {
+            $totalEleves = $db->table('ELEVEMAITRE')
+                ->join('CLASSE', 'CLASSE.CODECLASSE = ELEVEMAITRE.CODECLASSE', 'inner')
+                ->join('CENTRE', 'CENTRE.CODECENTRE = CLASSE.CODECENTRE', 'inner')
+                ->where('CENTRE.STATUT', 1)
+                ->countAllResults();
         }
 
         // 3. Total des formateurs et ventilation (Permanents / Vacataires)

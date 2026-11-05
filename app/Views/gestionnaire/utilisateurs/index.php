@@ -52,31 +52,31 @@
                     </div>
                 </div>
 
-                <!-- Navigation synchronisée -->
+                <!-- Navigation synchronisée CORRIGÉE EN /central/ -->
                 <nav class="px-4 space-y-1 overflow-y-auto max-h-[calc(100vh-280px)] pb-4">
                     <?php $uri = service('uri'); ?>
                     
-                    <a href="/gestionnaire/dashboard" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'dashboard' || !$uri->getSegment(2)) ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                    <a href="/central/dashboard" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'dashboard' || !$uri->getSegment(2)) ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
                         <i class="fa-solid fa-chart-pie w-5 <?= ($uri->getSegment(2) == 'dashboard' || !$uri->getSegment(2)) ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Tableau de bord</span>
                     </a>
 
-                    <a href="/gestionnaire/centres" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'centres') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                    <a href="/central/centres" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'centres') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
                         <i class="fa-solid fa-building-columns w-5 <?= ($uri->getSegment(2) == 'centres') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Centres régionaux</span>
                     </a>
 
-                    <a href="/gestionnaire/formateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'formateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                    <a href="/central/formateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'formateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
                         <i class="fa-solid fa-chalkboard-user w-5 <?= ($uri->getSegment(2) == 'formateurs') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Formateurs</span>
                     </a>
 
-                    <a href="/gestionnaire/utilisateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'utilisateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                    <a href="/central/utilisateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'utilisateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
                         <i class="fa-solid fa-users-gear w-5 <?= ($uri->getSegment(2) == 'utilisateurs') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Comptes Centres</span>
                     </a>
 
-                    <a href="/gestionnaire/profile" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'profile') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                    <a href="/central/profile" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'profile') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
                         <i class="fa-solid fa-user-gear w-5 <?= ($uri->getSegment(2) == 'profile') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Mon Profil</span>
                     </a>
@@ -114,7 +114,8 @@
                         <h2 class="text-2xl font-bold text-gray-900">Gestion des comptes Gestionnaires de Centre</h2>
                         <p class="text-sm text-gray-500 mt-1">Supervision centralisée et attribution des accès locaux pour les centres régionaux.</p>
                     </div>
-                    <a href="/gestionnaire/utilisateurs/create" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl shadow-sm transition flex items-center gap-2">
+                    <!-- CORRIGÉ EN /central/utilisateurs/create -->
+                    <a href="/central/utilisateurs/create" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl shadow-sm transition flex items-center gap-2">
                         <i class="fa-solid fa-user-plus"></i> Nouveau compte
                     </a>
                 </div>
@@ -142,7 +143,8 @@
 
                 <!-- BARRE DE FILTRES -->
                 <div class="bg-white p-3.5 rounded-2xl border border-gray-200/80 shadow-sm">
-                    <form id="filterForm" action="/gestionnaire/utilisateurs" method="GET" class="flex flex-wrap md:flex-nowrap gap-3 items-center">
+                    <!-- CORRIGÉ EN action="/central/utilisateurs" -->
+                    <form id="filterForm" action="/central/utilisateurs" method="GET" class="flex flex-wrap md:flex-nowrap gap-3 items-center">
                         
                         <!-- Recherche Textuelle -->
                         <div class="relative flex-1 min-w-[220px]">
@@ -161,8 +163,8 @@
                             <i class="fa-solid fa-filter absolute right-3 top-3 text-gray-400 text-[10px] pointer-events-none"></i>
                         </div>
 
-                        <!-- Reset Filter -->
-                        <a href="/gestionnaire/utilisateurs" class="p-2 h-9 w-9 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl transition flex items-center justify-center shrink-0" title="Réinitialiser la recherche et les filtres">
+                        <!-- Reset Filter CORRIGÉ EN /central/utilisateurs -->
+                        <a href="/central/utilisateurs" class="p-2 h-9 w-9 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl transition flex items-center justify-center shrink-0" title="Réinitialiser la recherche et les filtres">
                             <i class="fa-solid fa-rotate-right text-xs"></i>
                         </a>
 
@@ -223,12 +225,13 @@
                                             </td>
                                             <td class="py-3 px-4 text-center align-middle whitespace-nowrap">
                                                 <div class="inline-flex items-center justify-center gap-1.5">
+                                                    <!-- CORRIGÉ EN /central/utilisateurs/toggle/ -->
                                                     <?php if ($u['ACTIF']): ?>
-                                                        <a href="/gestionnaire/utilisateurs/toggle/<?= urlencode($u['IMMUTILISATEUR']) ?>" class="w-24 h-7 text-[11px] font-semibold rounded-lg border border-rose-200 bg-rose-50/50 hover:bg-rose-100 text-rose-700 transition inline-flex items-center justify-center shadow-2xs">
+                                                        <a href="/central/utilisateurs/toggle/<?= urlencode($u['IMMUTILISATEUR']) ?>" class="w-24 h-7 text-[11px] font-semibold rounded-lg border border-rose-200 bg-rose-50/50 hover:bg-rose-100 text-rose-700 transition inline-flex items-center justify-center shadow-2xs">
                                                             Désactiver
                                                         </a>
                                                     <?php else: ?>
-                                                        <a href="/gestionnaire/utilisateurs/toggle/<?= urlencode($u['IMMUTILISATEUR']) ?>" class="w-24 h-7 text-[11px] font-semibold rounded-lg border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100 text-emerald-700 transition inline-flex items-center justify-center shadow-2xs">
+                                                        <a href="/central/utilisateurs/toggle/<?= urlencode($u['IMMUTILISATEUR']) ?>" class="w-24 h-7 text-[11px] font-semibold rounded-lg border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100 text-emerald-700 transition inline-flex items-center justify-center shadow-2xs">
                                                             Activer
                                                         </a>
                                                     <?php endif; ?>
@@ -253,7 +256,7 @@
 
     </div>
 
-    <!-- Script de Recherche Dynamique (Debounce 350ms) -->
+    <!-- Script de Recherche Dynamique -->
     <script>
         let debounceTimer;
         const searchInput = document.getElementById('searchInput');

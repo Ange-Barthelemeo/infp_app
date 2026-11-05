@@ -197,9 +197,10 @@ class UserController extends BaseController
         }
 
         $tempPassword = '12345678';
-        } else {
-            $codecentre = $this->request->getPost('codecentre') ?: null;
-        }
+        
+        // else {
+        //     $codecentre = $this->request->getPost('codecentre') ?: null;
+        // }
 
         if ($userModel->find($imFinal)) {
             return redirect()->back()->withInput()->with('error', 'Ce matricule (IM) existe déjà dans la base.');
@@ -245,17 +246,28 @@ class UserController extends BaseController
             $emailService->setMessage($message);
             @$emailService->send();
         return redirect()->to('/utilisateurs')->with('success', 'Compte créé avec succès.');
+     }
     }
+
 
     public function edit($im)
-    {
-        $session = session();
-        if (!$session->get('logged_in')) {
-            return redirect()->to('/login');
-        }
-
-        return redirect()->to('/utilisateurs')->with('success', 'Compte créé avec succès. Une notification a été envoyée à l\'agent.');
+{
+    $session = session();
+    if (!$session->get('logged_in')) {
+        return redirect()->to('/login');
     }
+
+    $userModel = new UtilisateurModel();
+    $imDecoded = urldecode($im);
+    $user = $userModel->find($imDecoded);
+
+    if (!$user) {
+        return redirect()->to('/utilisateurs')->with('error', 'Utilisateur introuvable.');
+    }
+
+    // Transmettre les données de l'utilisateur à la vue d'édition
+    return view('admin/users/edit', ['user' => $user]);
+}
 
     public function toggleStatus($im)
     {

@@ -48,36 +48,40 @@
                 </div>
 
                 <!-- Navigation unifiée et synchronisée pour le Gestionnaire Central -->
-                <nav class="px-4 space-y-1 overflow-y-auto max-h-[calc(100vh-280px)] pb-4">
-                    <?php $uri = service('uri'); ?>
+               <nav class="px-4 space-y-1 overflow-y-auto max-h-[calc(100vh-280px)] pb-4">
+                    <?php 
+                    $currentUri = uri_string();
+                    // Gère la présence ou l'absence d'index.php dans l'URL
+                    $currentUri = preg_replace('#^index\.php/#', '', $currentUri);
+                    ?>
                     
                     <!-- Tableau de bord -->
-                    <a href="/gestionnaire/dashboard" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'dashboard' || !$uri->getSegment(2)) ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
-                        <i class="fa-solid fa-chart-pie w-5 <?= ($uri->getSegment(2) == 'dashboard' || !$uri->getSegment(2)) ? 'text-white' : 'text-emerald-600' ?>"></i>
+                    <a href="<?= base_url('central/dashboard') ?>" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($currentUri == 'central/dashboard' || $currentUri == 'central') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                        <i class="fa-solid fa-chart-pie w-5 <?= ($currentUri == 'central/dashboard' || $currentUri == 'central') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Tableau de bord</span>
                     </a>
 
                     <!-- Centres régionaux -->
-                    <a href="/gestionnaire/centres" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'centres') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
-                        <i class="fa-solid fa-building-columns w-5 <?= ($uri->getSegment(2) == 'centres') ? 'text-white' : 'text-emerald-600' ?>"></i>
+                    <a href="<?= base_url('central/centres') ?>" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= str_contains($currentUri, 'central/centres') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                        <i class="fa-solid fa-building-columns w-5 <?= str_contains($currentUri, 'central/centres') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Centres régionaux</span>
                     </a>
 
                     <!-- Formateurs -->
-                    <a href="/gestionnaire/formateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'formateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
-                        <i class="fa-solid fa-chalkboard-user w-5 <?= ($uri->getSegment(2) == 'formateurs') ? 'text-white' : 'text-emerald-600' ?>"></i>
+                    <a href="<?= base_url('central/formateurs') ?>" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= str_contains($currentUri, 'central/formateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                        <i class="fa-solid fa-chalkboard-user w-5 <?= str_contains($currentUri, 'central/formateurs') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Formateurs</span>
                     </a>
 
                     <!-- Comptes Gestionnaires de Centre -->
-                    <a href="/gestionnaire/utilisateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'utilisateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
-                        <i class="fa-solid fa-users-gear w-5 <?= ($uri->getSegment(2) == 'utilisateurs') ? 'text-white' : 'text-emerald-600' ?>"></i>
+                    <a href="<?= base_url('central/utilisateurs') ?>" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= str_contains($currentUri, 'central/utilisateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                        <i class="fa-solid fa-users-gear w-5 <?= str_contains($currentUri, 'central/utilisateurs') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Comptes Centres</span>
                     </a>
 
                     <!-- Mon Profil -->
-                    <a href="/gestionnaire/profile" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'profile') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
-                        <i class="fa-solid fa-user-gear w-5 <?= ($uri->getSegment(2) == 'profile') ? 'text-white' : 'text-emerald-600' ?>"></i>
+                    <a href="<?= base_url('central/profile') ?>" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= str_contains($currentUri, 'central/profile') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                        <i class="fa-solid fa-user-gear w-5 <?= str_contains($currentUri, 'central/profile') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Mon Profil</span>
                     </a>
                 </nav>
@@ -175,13 +179,13 @@
                             <i class="fa-solid fa-bolt text-amber-500"></i> Actions rapides
                         </h3>
                         <div class="space-y-2">
-                            <a href="/gestionnaire/centres" class="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-gray-700 text-xs font-bold transition border border-gray-100">
+                            <a href="/central/centres" class="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-gray-700 text-xs font-bold transition border border-gray-100">
                                 <span class="flex items-center gap-2.5">
                                     <i class="fa-solid fa-building-columns text-emerald-600"></i> Consulter les centres régionaux
                                 </span>
                                 <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                             </a>
-                            <a href="/gestionnaire/formateurs" class="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-gray-700 text-xs font-bold transition border border-gray-100">
+                            <a href="/central/formateurs" class="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-gray-700 text-xs font-bold transition border border-gray-100">
                                 <span class="flex items-center gap-2.5">
                                     <i class="fa-solid fa-chalkboard-user text-emerald-600"></i> Consulter les formateurs
                                 </span>
