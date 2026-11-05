@@ -7,11 +7,12 @@ use CodeIgniter\Model;
 class UtilisateurModel extends Model
 {
     protected $table = 'UTILISATEUR';
-    protected $primaryKey = 'IMMUTILISATEUR'; // <--- Indiquer explicitement la clé primaire ici
+    protected $primaryKey = 'IMMUTILISATEUR'; 
     protected $allowedFields = [
         'IMMUTILISATEUR',
         'NOM',
         'PRENOMS',
+        'TELEPHONE',         // <--- AJOUTEZ CETTE LIGNE ICI
         'CODEDIRECTION',
         'CODECENTRE',
         'EMAIL',
@@ -19,6 +20,6 @@ class UtilisateurModel extends Model
         'MOTDEPASSE',
         'ACTIF',
         'PREMIERE_CONNEXION',
-        'TENTATIVES_ECHOUEES' // Assurez-vous que ce champ y figure aussi pour autoriser sa mise à jour
+        'TENTATIVES_ECHOUEES'
     ];
 }

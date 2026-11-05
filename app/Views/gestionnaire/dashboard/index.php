@@ -47,24 +47,38 @@
                     </div>
                 </div>
 
-                <!-- Navigation -->
-                <nav class="px-4 space-y-1">
-                    <a href="/gestionnaire/dashboard" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg bg-emerald-600 text-white text-sm font-medium transition shadow-sm">
-                        <i class="fa-solid fa-chart-pie w-5"></i>
+                <!-- Navigation unifiée et synchronisée pour le Gestionnaire Central -->
+                <nav class="px-4 space-y-1 overflow-y-auto max-h-[calc(100vh-280px)] pb-4">
+                    <?php $uri = service('uri'); ?>
+                    
+                    <!-- Tableau de bord -->
+                    <a href="/gestionnaire/dashboard" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'dashboard' || !$uri->getSegment(2)) ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                        <i class="fa-solid fa-chart-pie w-5 <?= ($uri->getSegment(2) == 'dashboard' || !$uri->getSegment(2)) ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Tableau de bord</span>
                     </a>
-                    <a href="/centres" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-medium transition">
-                        <i class="fa-solid fa-building-columns w-5"></i>
+
+                    <!-- Centres régionaux -->
+                    <a href="/gestionnaire/centres" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'centres') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                        <i class="fa-solid fa-building-columns w-5 <?= ($uri->getSegment(2) == 'centres') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Centres régionaux</span>
                     </a>
-                    <a href="/formateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-medium transition">
-                        <i class="fa-solid fa-chalkboard-user w-5"></i>
+
+                    <!-- Formateurs -->
+                    <a href="/gestionnaire/formateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'formateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                        <i class="fa-solid fa-chalkboard-user w-5 <?= ($uri->getSegment(2) == 'formateurs') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Formateurs</span>
                     </a>
-                    <!-- Gestion unifiée des UE et de leurs EC associés -->
-                    <a href="/unites-enseignement" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-medium transition">
-                        <i class="fa-solid fa-book-open w-5"></i>
-                        <span>Gestion des UE & EC</span>
+
+                    <!-- Comptes Gestionnaires de Centre -->
+                    <a href="/gestionnaire/utilisateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'utilisateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                        <i class="fa-solid fa-users-gear w-5 <?= ($uri->getSegment(2) == 'utilisateurs') ? 'text-white' : 'text-emerald-600' ?>"></i>
+                        <span>Comptes Centres</span>
+                    </a>
+
+                    <!-- Mon Profil -->
+                    <a href="/gestionnaire/profile" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'profile') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                        <i class="fa-solid fa-user-gear w-5 <?= ($uri->getSegment(2) == 'profile') ? 'text-white' : 'text-emerald-600' ?>"></i>
+                        <span>Mon Profil</span>
                     </a>
                 </nav>
             </div>
@@ -161,15 +175,15 @@
                             <i class="fa-solid fa-bolt text-amber-500"></i> Actions rapides
                         </h3>
                         <div class="space-y-2">
-                            <a href="/centres" class="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-gray-700 text-xs font-bold transition border border-gray-100">
+                            <a href="/gestionnaire/centres" class="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-gray-700 text-xs font-bold transition border border-gray-100">
                                 <span class="flex items-center gap-2.5">
-                                    <i class="fa-solid fa-building-columns text-emerald-600"></i> Gérer les centres régionaux
+                                    <i class="fa-solid fa-building-columns text-emerald-600"></i> Consulter les centres régionaux
                                 </span>
                                 <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                             </a>
-                            <a href="/formateurs" class="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-gray-700 text-xs font-bold transition border border-gray-100">
+                            <a href="/gestionnaire/formateurs" class="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-gray-700 text-xs font-bold transition border border-gray-100">
                                 <span class="flex items-center gap-2.5">
-                                    <i class="fa-solid fa-chalkboard-user text-emerald-600"></i> Gérer les formateurs
+                                    <i class="fa-solid fa-chalkboard-user text-emerald-600"></i> Consulter les formateurs
                                 </span>
                                 <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                             </a>
@@ -179,7 +193,7 @@
                     <!-- Répartition Géographique Simplifiée -->
                     <div class="bg-white p-6 rounded-2xl border border-gray-200/80 shadow-sm lg:col-span-2 space-y-4">
                         <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
-                            <i class="fa-solid fa-map-location-dot text-emerald-600"></i> Couverture géographique des centres
+                            <i class="fa-solid fa-map-location-dot text-emerald-600"></i> Couverture géographique des centres actifs
                         </h3>
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-48 overflow-y-auto pr-2">
                             <?php if (!empty($repartitionGeo)): ?>

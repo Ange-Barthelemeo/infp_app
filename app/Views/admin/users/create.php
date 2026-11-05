@@ -18,69 +18,91 @@
 
     <div class="flex flex-1 overflow-hidden">
 
-        <!-- SIDEBAR -->
-        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between shrink-0">
+        <!-- SIDEBAR UNIFIÉE, SANS SOUS-TITRES ET ACTIVE -->
+<aside class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between shrink-0">
+    <div>
+        <!-- En-tête / Logo -->
+        <div class="p-6 border-b border-gray-100 flex items-center space-x-3">
+            <div class="w-9 h-6 rounded overflow-hidden shadow-sm flex border border-gray-200 shrink-0">
+                <div class="w-1/3 h-full bg-white"></div>
+                <div class="w-2/3 h-full flex flex-col">
+                    <div class="h-1/2 w-full bg-red-600"></div>
+                    <div class="h-1/2 w-full bg-emerald-600"></div>
+                </div>
+            </div>
             <div>
-                <!-- En-tête / Logo -->
-                <div class="p-6 border-b border-gray-100 flex items-center space-x-3">
-                    <div class="w-9 h-6 rounded overflow-hidden shadow-sm flex border border-gray-200 shrink-0">
-                        <div class="w-1/3 h-full bg-white"></div>
-                        <div class="w-2/3 h-full flex flex-col">
-                            <div class="h-1/2 w-full bg-red-600"></div>
-                            <div class="h-1/2 w-full bg-emerald-600"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <h1 class="text-sm font-bold text-gray-800"><?= esc(get_setting('app_name', 'INFP Madagascar')) ?></h1>
-                        <p class="text-[11px] text-gray-500">Administration Technique</p>
-                    </div>
-                </div>
-
-                <!-- Profil Admin Convivial -->
-                <div class="p-4 m-4 bg-gray-50 rounded-xl border border-gray-100 flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
-                        <?= strtoupper(substr($prenoms ?? 'A', 0, 1)) ?>
-                    </div>
-                    <div class="overflow-hidden">
-                        <p class="text-xs font-bold text-gray-900 truncate"><?= esc(($prenoms ?? '') . ' ' . ($nom ?? 'Administrateur')) ?></p>
-                        <p class="text-[10px] font-mono text-gray-500"><?= esc($immutilisateur) ?></p>
-                    </div>
-                </div>
-
-                <!-- Navigation -->
-                <nav class="px-4 space-y-1">
-                    <a href="/dashboard" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-medium transition">
-                        <i class="fa-solid fa-chart-pie w-5"></i>
-                        <span>Tableau de bord</span>
-                    </a>
-                    <a href="/utilisateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg bg-emerald-600 text-white text-sm font-medium transition shadow-sm">
-                        <i class="fa-solid fa-users-gear w-5"></i>
-                        <span>Gestion des comptes</span>
-                    </a>
-                    <a href="/audit-logs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-medium transition">
-                        <i class="fa-solid fa-shield-halved w-5"></i>
-                        <span>Journaux d'audit (Logs)</span>
-                    </a>
-                    <a href="/admin/profile" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-medium transition">
-                        <i class="fa-solid fa-user-gear w-5"></i>
-                        <span>Mon Profil Admin</span>
-                    </a>
-                    <a href="/parametres" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-medium transition">
-                        <i class="fa-solid fa-sliders w-5"></i>
-                        <span>Paramètres système</span>
-                    </a>
-                </nav>
+                <h1 class="text-sm font-bold text-gray-800"><?= esc(get_setting('app_name', 'INFP Madagascar')) ?></h1>
+                <p class="text-[11px] text-gray-500">Administration Technique</p>
             </div>
+        </div>
 
-            <!-- Déconnexion -->
-            <div class="p-4 border-t border-gray-100">
-                <a href="/logout" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 text-sm font-medium transition">
-                    <i class="fa-solid fa-right-from-bracket w-5"></i>
-                    <span>Déconnexion</span>
-                </a>
+        <!-- Profil Admin Convivial -->
+        <div class="p-4 m-4 bg-gray-50 rounded-xl border border-gray-100 flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                <?= strtoupper(substr($prenoms ?? 'A', 0, 1)) ?>
             </div>
-        </aside>
+            <div class="overflow-hidden">
+                <p class="text-xs font-bold text-gray-900 truncate"><?= esc(($prenoms ?? '') . ' ' . ($nom ?? 'Administrateur')) ?></p>
+                <p class="text-[10px] font-mono text-gray-500">
+                    <?php 
+                        $adminImBrut = preg_replace('/\D/', '', $immutilisateur ?? '');
+                        echo (strlen($adminImBrut) === 6) ? substr($adminImBrut, 0, 3) . ' ' . substr($adminImBrut, 3, 3) : esc($immutilisateur);
+                    ?>
+                </p>
+            </div>
+        </div>
 
+        <!-- Navigation Épurée sans sous-titres -->
+        <nav class="px-4 space-y-1 overflow-y-auto max-h-[calc(100vh-280px)] pb-4">
+            
+            <?php $uri = service('uri'); ?>
+            
+            <!-- Tableau de bord -->
+            <a href="/dashboard" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(1) == 'dashboard') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                <i class="fa-solid fa-chart-pie w-5"></i>
+                <span>Tableau de bord</span>
+            </a>
+
+            <!-- Gestion des comptes -->
+            <a href="/utilisateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(1) == 'utilisateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                <i class="fa-solid fa-users-gear w-5"></i>
+                <span>Gestion des comptes</span>
+            </a>
+
+            <!-- Journaux d'audit -->
+            <a href="/audit-logs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(1) == 'audit-logs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                <i class="fa-solid fa-shield-halved w-5"></i>
+                <span>Journaux d'audit (Logs)</span>
+            </a>
+
+            <!-- Référentiel & Métadonnées -->
+            <a href="/admin/referentiel" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(1) == 'admin' && $uri->getSegment(2) == 'referentiel') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                <i class="fa-solid fa-database w-5 <?= ($uri->getSegment(1) == 'admin' && $uri->getSegment(2) == 'referentiel') ? 'text-white' : 'text-emerald-600' ?>"></i>
+                <span>Référentiel & Métadonnées</span>
+            </a>
+
+            <!-- Mon Profil Admin -->
+            <a href="/admin/profile" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(1) == 'admin' && $uri->getSegment(2) == 'profile') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                <i class="fa-solid fa-user-gear w-5"></i>
+                <span>Mon Profil Admin</span>
+            </a>
+
+            <!-- Paramètres système -->
+            <a href="/parametres" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(1) == 'parametres') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                <i class="fa-solid fa-sliders w-5"></i>
+                <span>Paramètres système</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Déconnexion -->
+    <div class="p-4 border-t border-gray-100 shrink-0">
+        <a href="/logout" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 text-sm font-medium transition">
+            <i class="fa-solid fa-right-from-bracket w-5"></i>
+            <span>Déconnexion</span>
+        </a>
+    </div>
+</aside>
         <!-- MAIN CONTENT -->
         <main class="flex-1 flex flex-col h-full overflow-y-auto bg-gray-50/50">
             
@@ -98,7 +120,6 @@
             <!-- Contenu du formulaire -->
             <div class="p-8 max-w-4xl mx-auto w-full space-y-6">
                 
-                <!-- Titre & Sous-titre Court -->
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900">Créer un nouveau compte utilisateur</h2>
                     <p class="text-sm text-gray-500 mt-1">Enregistrement d'un nouveau compte utilisateur métier.</p>
@@ -115,7 +136,6 @@
                 <!-- CARTE FORMULAIRE -->
                 <div class="bg-white rounded-2xl border border-gray-200/80 shadow-sm overflow-hidden">
                     
-                    <!-- Bandeau Vert de Carte -->
                     <div class="bg-emerald-700 px-6 py-4 text-white flex items-center justify-between">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white text-lg font-bold border border-white/20">
@@ -123,7 +143,7 @@
                             </div>
                             <div>
                                 <h3 class="text-base font-bold leading-tight">Nouvel Agent INFP</h3>
-                                <p class="text-xs text-emerald-100 font-mono">Attribution automatique de l'IM</p>
+                                <p class="text-xs text-emerald-100 font-mono">Matricule à 6 chiffres & Téléphone international</p>
                             </div>
                         </div>
                         <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-800/80 text-emerald-100 border border-emerald-600/50">
@@ -133,23 +153,25 @@
 
                     <form action="/utilisateurs/store" method="POST" class="p-6 space-y-5">
                         
-                        <!-- Profil et IM Généré alignés -->
+                        <!-- Profil et IM à 6 chiffres alignés -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Profil / Rôle</label>
                                 <select id="profil_select" name="profil" required onchange="updateFormBehavior()" class="w-full h-11 px-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm bg-white font-medium text-gray-800">
-                                    <option value="GESTIONNAIRE_CENTRAL">Gestionnaire Central</option>
-                                    <option value="GESTIONNAIRE_CENTRE">Gestionnaire de Centre</option>
-                                    <option value="RESPONSABLE_CENTRE">Responsable de Centre</option>
+                                    <?php if ($profilConnecte === 'ADMIN'): ?>
+                                        <option value="GESTIONNAIRE_CENTRAL">Gestionnaire Central</option>
+                                        <option value="GESTIONNAIRE_CENTRE">Gestionnaire de Centre</option>
+                                    <?php elseif ($profilConnecte === 'GESTIONNAIRE_CENTRAL'): ?>
+                                        <option value="GESTIONNAIRE_CENTRE">Gestionnaire de Centre</option>
+                                    <?php elseif ($profilConnecte === 'GESTIONNAIRE_CENTRE'): ?>
+                                        <option value="RESPONSABLE_CENTRE">Responsable de Centre</option>
+                                    <?php endif; ?>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Matricule (IM) Généré</label>
-                                <div class="flex items-center w-full h-11 rounded-xl border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500">
-                                    <input type="text" id="im_input" name="immutilisateur" value="<?= old('immutilisateur') ?>" placeholder="ex : 123456" maxlength="7" required oninput="formatIMInput(this)" class="w-full h-full px-4 border-none focus:outline-none focus:ring-0 text-sm font-mono tracking-wider text-gray-800">
-                                    <span id="im_suffix" class="h-full px-4 bg-gray-100 border-l border-gray-300 text-sm font-mono font-bold text-emerald-700 flex items-center justify-center shrink-0 min-w-[45px] select-none">-C</span>
-                                </div>
-                                <p class="text-[11px] text-gray-400 mt-1">Tapez 6 chiffres (espace et suffixe gérés automatiquement).</p>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Matricule (IM) — 6 chiffres</label>
+                                <input type="text" id="im_input" name="immutilisateur" value="<?= old('immutilisateur') ?>" placeholder="ex : 123456" maxlength="7" required oninput="formatIMInput(this)" class="w-full h-11 px-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-mono tracking-widest text-gray-800">
+                                <p class="text-[11px] text-gray-400 mt-1">Exactement 6 chiffres (espace automatique).</p>
                             </div>
                         </div>
 
@@ -187,16 +209,38 @@
                             </select>
                         </div>
 
-                        <!-- Email -->
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Adresse Email</label>
-                            <input type="email" name="email" value="<?= old('email') ?>" placeholder="utilisateur@education.gov.mg" required class="w-full h-11 px-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+                        <!-- Email et Téléphone International (+261) corrigé (aligné verticalement) -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Adresse Email</label>
+                                <input type="email" name="email" value="<?= old('email') ?>" placeholder="utilisateur@education.gov.mg" required class="w-full h-11 px-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Numéro de Téléphone (+261)</label>
+                                <div class="flex items-center w-full h-11 rounded-xl border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 bg-white">
+                                    <!-- Sélecteur d'opérateur -->
+                                    <select id="operator_select" onchange="updatePhonePrefix()" class="h-full px-2 bg-gray-100 border-r border-gray-300 text-xs font-bold text-gray-700 focus:outline-none cursor-pointer">
+                                        <option value="34">034 (Telma)</option>
+                                        <option value="38">038 (Telma)</option>
+                                        <option value="32">032 (Orange)</option>
+                                        <option value="37">037 (Orange)</option>
+                                        <option value="33">033 (Airtel)</option>
+                                    </select>
+                                    <!-- Champ caché contenant le format complet normalisé envoyé au serveur (+261XXXXXXXXX) -->
+                                    <input type="hidden" id="telephone_normalise" name="telephone" value="<?= old('telephone') ?>">
+                                    <!-- Affichage dynamique de l'indicatif international -->
+                                    <span id="phone_prefix_display" class="px-2.5 text-xs font-mono font-bold text-gray-600 bg-gray-50 h-full flex items-center border-r border-gray-300 select-none whitespace-nowrap">+261 34</span>
+                                    <!-- Saisie des 7 chiffres restants -->
+                                    <input type="text" id="phone_input" placeholder="XX XXX XX" maxlength="9" required oninput="formatPhoneInput(this)" class="w-full h-full px-3 border-none focus:outline-none focus:ring-0 text-sm font-mono tracking-wider text-gray-800">
+                                </div>
+                                <p class="text-[11px] text-gray-400 mt-1">Format international malgache (+261 XX XX XXX XX).</p>
+                            </div>
                         </div>
 
-                        <!-- Note de sécurité mise à jour et bloc vert solidement rempli -->
+                        <!-- Note de sécurité -->
                         <div class="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl flex items-center gap-2.5">
                             <i class="fa-solid fa-shield-halved text-emerald-600 text-base shrink-0"></i>
-                            <span><strong>Sécurité :</strong> Un mot de passe temporaire est généré et envoyé par e-mail à la création du compte.</span>
+                            <span><strong>Sécurité :</strong> Un mot de passe provisoire (12345678) est attribué et envoyé par e-mail à la création du compte.</span>
                         </div>
 
                         <!-- Actions -->
@@ -217,7 +261,7 @@
 
     </div>
 
-    <!-- Script de formatage IM et de gestion dynamique -->
+    <!-- Script de formatage dynamique -->
     <script>
         function formatIMInput(input) {
             let chiffres = input.value.replace(/\D/g, '').substring(0, 6);
@@ -228,35 +272,64 @@
             }
         }
 
+        function updatePhonePrefix() {
+            const op = document.getElementById('operator_select').value;
+            document.getElementById('phone_prefix_display').textContent = '+261 ' + op;
+            updateHiddenPhoneValue();
+        }
+
+        function formatPhoneInput(input) {
+            let chiffres = input.value.replace(/\D/g, '').substring(0, 7);
+            
+            let formatted = '';
+            if (chiffres.length > 0) {
+                formatted += chiffres.substring(0, 2);
+            }
+            if (chiffres.length >= 3) {
+                formatted += ' ' + chiffres.substring(2, 5);
+            }
+            if (chiffres.length >= 6) {
+                formatted += ' ' + chiffres.substring(5, 7);
+            }
+            
+            input.value = formatted;
+            updateHiddenPhoneValue();
+        }
+
+        function updateHiddenPhoneValue() {
+            const op = document.getElementById('operator_select').value;
+            const phoneInputDigits = document.getElementById('phone_input').value.replace(/\D/g, '');
+            const hiddenField = document.getElementById('telephone_normalise');
+            
+            if (phoneInputDigits.length === 7) {
+                hiddenField.value = '+261' + op + phoneInputDigits;
+            } else {
+                hiddenField.value = '';
+            }
+        }
+
         function updateFormBehavior() {
-            const profil = document.getElementById('profil_select').value;
+            const selectElement = document.getElementById('profil_select');
+            if (!selectElement) return;
+            
+            const profil = selectElement.value;
             const directionGroup = document.getElementById('direction_field_group');
             const centreGroup = document.getElementById('centre_field_group');
-            const suffixElement = document.getElementById('im_suffix');
 
-            let lettre = 'C';
             if (profil === 'GESTIONNAIRE_CENTRAL') {
-                lettre = 'C';
                 directionGroup.style.display = 'block';
                 centreGroup.style.display = 'none';
-                centreGroup.querySelector('select').value = '';
-            } else if (profil === 'GESTIONNAIRE_CENTRE') {
-                lettre = 'B';
+                if(centreGroup.querySelector('select')) centreGroup.querySelector('select').value = '';
+            } else {
                 directionGroup.style.display = 'none';
                 centreGroup.style.display = 'block';
-                directionGroup.querySelector('select').value = '';
-            } else if (profil === 'RESPONSABLE_CENTRE') {
-                lettre = 'R';
-                directionGroup.style.display = 'none';
-                centreGroup.style.display = 'block';
-                directionGroup.querySelector('select').value = '';
+                if(directionGroup.querySelector('select')) directionGroup.querySelector('select').value = '';
             }
-
-            suffixElement.textContent = '-' + lettre;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             updateFormBehavior();
+            updatePhonePrefix();
         });
     </script>
 
