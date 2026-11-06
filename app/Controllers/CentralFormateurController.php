@@ -187,7 +187,7 @@ class CentralFormateurController extends BaseController
             return redirect()->back()->withInput()->with('error', 'Erreur lors de l’enregistrement du formateur.');
         }
 
-        return redirect()->to('/gestionnaire/formateurs')->with('success', 'Formateur ajouté avec succès.');
+        return redirect()->to('/central/formateurs')->with('success', 'Formateur ajouté avec succès.');
     }
 
     /**
@@ -211,6 +211,6 @@ class CentralFormateurController extends BaseController
         $db->table('FORMATEUR')->where('NUMCINFORM', $numCin)->update(['EST_ACTIF' => $nouveauStatut]);
 
         $message = ($nouveauStatut == 1) ? 'Formateur activé avec succès.' : 'Formateur désactivé avec succès.';
-        return redirect()->to('/gestionnaire/formateurs')->with('success', $message);
+        return redirect()->to('/central/formateurs')->with('success', $message);
     }
 }

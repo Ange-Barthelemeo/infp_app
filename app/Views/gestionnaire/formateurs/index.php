@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Formateurs - <?= esc(get_setting('app_name', 'INFP Madagascar')) ?></title>
+    <script src="<?= base_url('assets/js/tailwind.js') ?>"></script>
+    <link rel="stylesheet" href="<?= base_url('assets/css/all.min.css') ?>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -57,31 +59,31 @@
                     <?php $uri = service('uri'); ?>
                     
                     <!-- Tableau de bord -->
-                    <a href="/gestionnaire/dashboard" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'dashboard' || !$uri->getSegment(2)) ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                    <a href="/central/dashboard" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'dashboard' || !$uri->getSegment(2)) ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
                         <i class="fa-solid fa-chart-pie w-5 <?= ($uri->getSegment(2) == 'dashboard' || !$uri->getSegment(2)) ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Tableau de bord</span>
                     </a>
 
                     <!-- Centres régionaux -->
-                    <a href="/gestionnaire/centres" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'centres') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                    <a href="/central/centres" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'centres') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
                         <i class="fa-solid fa-building-columns w-5 <?= ($uri->getSegment(2) == 'centres') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Centres régionaux</span>
                     </a>
 
                     <!-- Formateurs -->
-                    <a href="/gestionnaire/formateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'formateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                    <a href="/central/formateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'formateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
                         <i class="fa-solid fa-chalkboard-user w-5 <?= ($uri->getSegment(2) == 'formateurs') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Formateurs</span>
                     </a>
 
                     <!-- Comptes Gestionnaires de Centre -->
-                    <a href="/gestionnaire/utilisateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'utilisateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                    <a href="/central/utilisateurs" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'utilisateurs') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
                         <i class="fa-solid fa-users-gear w-5 <?= ($uri->getSegment(2) == 'utilisateurs') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Comptes Centres</span>
                     </a>
 
                     <!-- Mon Profil -->
-                    <a href="/gestionnaire/profile" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'profile') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
+                    <a href="/central/profile" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg <?= ($uri->getSegment(2) == 'profile') ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' ?> text-sm font-medium transition">
                         <i class="fa-solid fa-user-gear w-5 <?= ($uri->getSegment(2) == 'profile') ? 'text-white' : 'text-emerald-600' ?>"></i>
                         <span>Mon Profil</span>
                     </a>
@@ -119,7 +121,7 @@
                         <h2 class="text-2xl font-bold text-gray-900">Gestion des Formateurs</h2>
                         <p class="text-sm text-gray-500 mt-1">Supervision nationale des formateurs permanents et vacataires affectés aux centres actifs.</p>
                     </div>
-                    <a href="/gestionnaire/formateurs/create" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl shadow-sm transition flex items-center gap-2">
+                    <a href="/central/formateurs/create" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl shadow-sm transition flex items-center gap-2">
                         <i class="fa-solid fa-user-plus"></i> Nouveau formateur
                     </a>
                 </div>
@@ -147,7 +149,7 @@
 
                 <!-- BARRE DE FILTRES -->
                 <div class="bg-white p-3.5 rounded-2xl border border-gray-200/80 shadow-sm">
-                    <form id="filterForm" action="/gestionnaire/formateurs" method="GET" class="flex flex-wrap md:flex-nowrap gap-3 items-center">
+                    <form id="filterForm" action="/central/formateurs" method="GET" class="flex flex-wrap md:flex-nowrap gap-3 items-center">
                         
                         <!-- Recherche Textuelle -->
                         <div class="relative flex-1 min-w-[220px]">

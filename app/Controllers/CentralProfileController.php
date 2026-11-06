@@ -93,6 +93,6 @@ class CentralProfileController extends BaseController
             'prenoms' => $prenoms
         ]);
 
-        return redirect()->to('/gestionnaire/profile')->with('success', 'Profil mis à jour avec succès.');
+        return redirect()->to('/central/profile')->with('success', 'Profil mis à jour avec succès.');
     }
 }

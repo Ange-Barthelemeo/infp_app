@@ -89,13 +89,12 @@ class UserController extends BaseController
         $profilConnecte = $session->get('profil');
         $db = \Config\Database::connect();
         
-        // Récupération uniquement des directions actives (STATUT = 1)
+        // CORRIGÉ : Récupération de toutes les directions (sans filtre STATUT si la colonne n'existe pas)
         $directions = $db->table('DIRECTION')
-                         ->where('STATUT', 1)
                          ->get()
                          ->getResultArray();
         
-        // Récupération uniquement des centres actifs (STATUT = 1)
+        // Récupération des centres actifs (si la table CENTRE possède bien STATUT)
         $centres = $db->table('CENTRE')
                       ->where('STATUT', 1)
                       ->get()

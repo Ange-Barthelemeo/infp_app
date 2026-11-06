@@ -125,7 +125,7 @@ class CentralUtilisateurController extends BaseController
             'PREMIERE_CONNEXION' => 1
         ]);
 
-        return redirect()->to('/gestionnaire/utilisateurs')->with('success', 'Compte Gestionnaire de Centre créé avec succès (Mot de passe par défaut : 12345678).');
+        return redirect()->to('/central/utilisateurs')->with('success', 'Compte Gestionnaire de Centre créé avec succès (Mot de passe par défaut : 12345678).');
     }
 
     public function toggleStatus($im)
@@ -139,13 +139,13 @@ class CentralUtilisateurController extends BaseController
         $user = $db->table('UTILISATEUR')->where('IMMUTILISATEUR', $im)->where('PROFIL', 'GESTIONNAIRE_CENTRE')->get()->getRowArray();
 
         if (!$user) {
-            return redirect()->to('/gestionnaire/utilisateurs')->with('error', 'Utilisateur introuvable.');
+            return redirect()->to('/central/utilisateurs')->with('error', 'Utilisateur introuvable.');
         }
 
         $nouveauStatut = ($user['ACTIF'] == 1) ? 0 : 1;
         $db->table('UTILISATEUR')->where('IMMUTILISATEUR', $im)->update(['ACTIF' => $nouveauStatut]);
 
         $message = ($nouveauStatut == 1) ? 'Compte activé avec succès.' : 'Compte désactivé avec succès.';
-        return redirect()->to('/gestionnaire/utilisateurs')->with('success', $message);
+        return redirect()->to('/central/utilisateurs')->with('success', $message);
     }
 }
